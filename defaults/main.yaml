@@ -33,14 +33,14 @@ filebeat:
             number_of_shards: 1
             number_of_replicas: 0
   elasticsearch_pipelines:
-      varnish_access:
-        pipeline: varnish_access
+      varnish.access:
+        pipeline: varnish.access
         when:
           equals:
             fields:
               type: varnish.access
-      nginx_access:
-        pipeline: nginx_access
+      nginx.access:
+        pipeline: nginx.access
         when:
           equals:
             fields:
