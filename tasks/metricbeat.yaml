@@ -6,6 +6,7 @@
   with_items:
     - "{{ metricbeat.prefix.config }}"
     - "{{ metricbeat.config.path.logs }}"
+  when: ansible_os_family == 'FreeBSD'
   notify: Restart Metricbeat
 
 - name: Template Metricbeat configuration
@@ -28,6 +29,7 @@
   with_items:
     - src: rc.conf.d/metricbeat.j2
       dest: /usr/local/etc/rc.conf.d/metricbeat
+  when: ansible_os_family == 'FreeBSD'
   notify: Restart Metricbeat
 
 - name: Enable Metricbeat service
@@ -38,5 +40,6 @@
     - path: /etc/rc.conf
       regexp: "^metricbeat_enable="
       line: 'metricbeat_enable="YES"'
+  when: ansible_os_family == 'FreeBSD'
   notify:
     - Start Metricbeat

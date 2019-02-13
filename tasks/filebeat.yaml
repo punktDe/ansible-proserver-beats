@@ -6,6 +6,7 @@
   with_items:
     - "{{ filebeat.prefix.config }}"
     - "{{ filebeat.config.path.logs }}"
+  when: ansible_os_family == 'FreeBSD'
   notify: Restart Filebeat
 
 - name: Template Filebeat configuration
@@ -28,6 +29,7 @@
   with_items:
     - src: rc.conf.d/filebeat.j2
       dest: /usr/local/etc/rc.conf.d/filebeat
+  when: ansible_os_family == 'FreeBSD'
   notify: Restart Filebeat
 
 - name: Enable Filebeat service
@@ -38,5 +40,6 @@
     - path: /etc/rc.conf
       regexp: "^filebeat_enable="
       line: 'filebeat_enable="YES"'
+  when: ansible_os_family == 'FreeBSD'
   notify:
     - Start Filebeat
