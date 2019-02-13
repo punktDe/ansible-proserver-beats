@@ -1,0 +1,61 @@
+---
+metricbeat:
+  prefix:
+    config: /usr/local/etc/metricbeat
+  config:
+    name: "{{ inventory_hostname }}"
+    path:
+      logs: /var/log/metricbeat
+    metricbeat:
+      modules:
+        - module: system
+          metricsets:
+            - network
+          enabled: true
+          period: 60s
+    setup:
+      template:
+        settings:
+          index:
+            number_of_shards: 1
+            number_of_replicas: 0
+filebeat:
+  prefix:
+    config: /usr/local/etc/filebeat
+  config:
+    name: "{{ inventory_hostname }}"
+    path:
+      logs: /var/log/filebeat
+    setup:
+      template:
+        settings:
+          index:
+            number_of_shards: 1
+            number_of_replicas: 0
+  elasticsearch_pipelines:
+      varnish_access:
+        pipeline: varnish_access
+        when:
+          equals:
+            fields:
+              type: varnish.access
+      nginx_access:
+        pipeline: nginx_access
+        when:
+          equals:
+            fields:
+              type: nginx.access
+  # TODO: Change key from "prospectors" to "inputs" in templates in Filebeat 6.3
+  inputs:
+    varnish.access:
+      type: log
+      paths:
+        - /var/log/varnishncsa.log
+      fields:
+        type: varnish.access
+    nginx.access:
+      type: log
+      paths:
+        - /var/log/nginx/access.log
+      fields:
+        type: nginx.access

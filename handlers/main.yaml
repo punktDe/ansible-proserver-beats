@@ -1,0 +1,24 @@
+---
+- name: Start Metricbeat
+  service:
+    name: metricbeat
+    state: started
+  register: metricbeat_service_result
+
+- name: Restart Metricbeat
+  service:
+    name: metricbeat
+    state: restarted
+  when: not (metricbeat_service_result is defined and metricbeat_service_result.changed)
+
+- name: Start Filebeat
+  service:
+    name: filebeat
+    state: started
+  register: filebeat_service_result
+
+- name: Restart Filebeat
+  service:
+    name: filebeat
+    state: restarted
+  when: not (filebeat_service_result is defined and filebeat_service_result.changed)

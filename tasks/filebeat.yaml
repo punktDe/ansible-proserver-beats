@@ -1,0 +1,42 @@
+---
+- name: Create directories for Filebeat
+  file:
+    state: directory
+    path: "{{ item }}"
+  with_items:
+    - "{{ filebeat.prefix.config }}"
+    - "{{ filebeat.config.path.logs }}"
+  notify: Restart Filebeat
+
+- name: Template Filebeat configuration
+  template:
+    src: "{{ item }}"
+    dest: "{{ render_path }}"
+  loop_control:
+    label: "{{ render_path }}"
+  vars:
+    template_dir: "{{ role_path }}/templates"
+    render_path: "{{ filebeat.prefix.config }}/{{ item|beatsclient_strip_prefix(template_dir + '/filebeat/')|beatsclient_strip_suffix('.j2') }}"
+  with_fileglob:
+    - "{{ role_path }}/templates/filebeat/*.j2"
+  notify: Restart Filebeat
+
+- name: Configure Filebeat service
+  template: src="{{ item.src }}" dest="{{ item.dest }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  with_items:
+    - src: rc.conf.d/filebeat.j2
+      dest: /usr/local/etc/rc.conf.d/filebeat
+  notify: Restart Filebeat
+
+- name: Enable Filebeat service
+  lineinfile: path="{{ item.path }}" regexp="{{ item.regexp }}" line="{{ item.line }}"
+  loop_control:
+    label: "{{ item.path }}"
+  with_items:
+    - path: /etc/rc.conf
+      regexp: "^filebeat_enable="
+      line: 'filebeat_enable="YES"'
+  notify:
+    - Start Filebeat

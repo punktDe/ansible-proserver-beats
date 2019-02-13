@@ -1,0 +1,1 @@
+{{ filebeat.config|combine({'filebeat': {'prospectors': filebeat.inputs.values()|list}, 'output': {'elasticsearch': {'pipelines': filebeat.elasticsearch_pipelines.values()|list}}}, recursive=true)|to_nice_yaml(indent=2) }}
