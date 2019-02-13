@@ -1,1 +1,1 @@
-metricbeat_config="-path.home /var/db/beats/metricbeat -path.config /usr/local/etc/metricbeat"
+metricbeat_config="-path.home /var/db/beats/metricbeat -path.config {{ metricbeat.prefix.config }}"
