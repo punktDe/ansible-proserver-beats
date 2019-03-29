@@ -33,29 +33,29 @@ filebeat:
             number_of_shards: 1
             number_of_replicas: 0
   elasticsearch_pipelines:
-      varnish.access:
-        pipeline: varnish.access
+      varnish_access:
+        pipeline: varnish_access
         when:
           equals:
             fields:
-              type: varnish.access
-      nginx.access:
-        pipeline: nginx.access
+              type: varnish_access
+      nginx_access:
+        pipeline: nginx_access
         when:
           equals:
             fields:
-              type: nginx.access
+              type: nginx_access
   # TODO: Change key from "prospectors" to "inputs" in templates in Filebeat 6.3
   inputs:
-    varnish.access:
+    varnish_access:
       type: log
       paths:
         - /var/log/varnishncsa.log
       fields:
-        type: varnish.access
-    nginx.access:
+        type: varnish_access
+    nginx_access:
       type: log
       paths:
         - /var/log/nginx/access.log
       fields:
-        type: nginx.access
+        type: nginx_access
