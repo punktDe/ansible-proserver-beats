@@ -1,5 +1,6 @@
 ---
 metricbeat:
+  enabled: yes
   prefix:
     config: /usr/local/etc/metricbeat
   config:
@@ -20,6 +21,7 @@ metricbeat:
             number_of_shards: 1
             number_of_replicas: 0
 filebeat:
+  enabled: yes
   prefix:
     config: /usr/local/etc/filebeat
   config:
