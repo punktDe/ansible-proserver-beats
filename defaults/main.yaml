@@ -1,6 +1,6 @@
 ---
 metricbeat:
-  enabled: yes
+  enabled: no
   prefix:
     config: /usr/local/etc/metricbeat
   config:
@@ -21,7 +21,7 @@ metricbeat:
             number_of_shards: 1
             number_of_replicas: 0
 filebeat:
-  enabled: yes
+  enabled: no
   prefix:
     config: /usr/local/etc/filebeat
   config:
@@ -36,12 +36,14 @@ filebeat:
             number_of_replicas: 0
   elasticsearch_pipelines:
     varnish_access:
+      enabled: no
       pipeline: varnish_access
       when:
         equals:
           fields:
             type: varnish_access
     nginx_access:
+      enabled: no
       pipeline: nginx_access
       when:
         equals:
@@ -49,12 +51,14 @@ filebeat:
             type: nginx_access
   inputs:
     varnish_access:
+      enabled: no
       type: log
       paths:
         - /var/log/varnishncsa.log
       fields:
         type: varnish_access
     nginx_access:
+      enabled: no
       type: log
       paths:
         - /var/log/nginx/access.log
