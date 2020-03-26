@@ -22,3 +22,13 @@
     name: filebeat
     state: restarted
   when: not (filebeat_service_result is defined and filebeat_service_result.changed)
+
+- name: Stop Metricbeat
+  service:
+    name: metricbeat
+    state: stopped
+
+- name: Stop Filebeat
+  service:
+    name: filebeat
+    state: stopped

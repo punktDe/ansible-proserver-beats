@@ -1,5 +1,9 @@
 ---
 - import_tasks: metricbeat.yaml
   when: metricbeat.enabled
+- import_tasks: metricbeat_disabled.yaml
+  when: not metricbeat.enabled
 - import_tasks: filebeat.yaml
   when: filebeat.enabled
+- import_tasks: filebeat_disabled.yaml
+  when: not filebeat.enabled
