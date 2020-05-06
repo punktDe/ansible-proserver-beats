@@ -30,10 +30,9 @@ filebeat:
       logs: /var/log/filebeat
     setup:
       template:
-        settings:
-          index:
-            number_of_shards: 1
-            number_of_replicas: 0
+        enabled: no
+      ilm:
+        enabled: no
   elasticsearch_pipelines:
     varnish_access:
       enabled: no
