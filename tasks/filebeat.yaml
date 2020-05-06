@@ -13,6 +13,7 @@
   template:
     src: "{{ item }}"
     dest: "{{ render_path }}"
+    mode: o-r
   loop_control:
     label: "{{ render_path }}"
   vars:
