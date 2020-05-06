@@ -33,21 +33,7 @@ filebeat:
         enabled: no
       ilm:
         enabled: no
-  elasticsearch_pipelines:
-    varnish_access:
-      enabled: no
-      pipeline: varnish_access
-      when:
-        equals:
-          fields:
-            type: varnish_access
-    nginx_access:
-      enabled: no
-      pipeline: nginx_access
-      when:
-        equals:
-          fields:
-            type: nginx_access
+  elasticsearch_pipelines: {}
   inputs:
     varnish_access:
       enabled: no
