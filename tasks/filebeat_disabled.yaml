@@ -1,5 +1,0 @@
-- name: Stop and disable Filebeat
-  service:
-    name: filebeat
-    state: stopped
-    enabled: no

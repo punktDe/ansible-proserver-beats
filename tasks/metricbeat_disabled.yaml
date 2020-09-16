@@ -1,5 +1,0 @@
-- name: Stop and disable Metricbeat
-  service:
-    name: metricbeat
-    state: stopped
-    enabled: no
