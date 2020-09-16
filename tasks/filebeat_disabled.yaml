@@ -1,14 +1,5 @@
----
-- name: Disable Filebeat service
-  lineinfile:
-    path: "{{ item.path }}"
-    regexp: "{{ item.regexp }}"
-    state: absent
-  loop_control:
-    label: "{{ item.path }}"
-  with_items:
-    - path: /etc/rc.conf
-      regexp: "^filebeat_enable="
-  when: ansible_os_family == 'FreeBSD'
-  notify:
-    - Stop Filebeat
+- name: Stop and disable Filebeat
+  service:
+    name: filebeat
+    state: stopped
+    enabled: no

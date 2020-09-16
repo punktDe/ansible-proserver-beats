@@ -1,1 +1,0 @@
-{{ filebeat.config|combine({'filebeat': {'inputs': filebeat.inputs.values()|reject('none')|selectattr('enabled')|list|beatsclient_delete_key_from_dicts('enabled')}, 'output': {'elasticsearch': {'pipelines': filebeat.elasticsearch_pipelines.values()|reject('none')|selectattr('enabled')|list|beatsclient_delete_key_from_dicts('enabled')}}}, recursive=true)|to_nice_yaml(indent=2) }}

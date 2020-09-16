@@ -1,46 +1,45 @@
----
+- name: Install Metricbeat
+  when: ansible_distribution == 'Ubuntu'
+  apt:
+    name: metricbeat
+
 - name: Create directories for Metricbeat
+  when: ansible_os_family == 'FreeBSD'
+  loop:
+    - "{{ metricbeat.prefix.config }}"
+    - "{{ metricbeat.config.path.logs }}"
   file:
     state: directory
     path: "{{ item }}"
-  with_items:
-    - "{{ metricbeat.prefix.config }}"
-    - "{{ metricbeat.config.path.logs }}"
-  when: ansible_os_family == 'FreeBSD'
   notify: Restart Metricbeat
 
-- name: Template Metricbeat configuration
-  template:
-    src: "{{ item }}"
-    dest: "{{ render_path }}"
-    mode: o-r
+- name: Template Metricbeat config
+  loop:
+    - src: metricbeat/metricbeat.yml
+      dest: "{{ metricbeat.prefix.config }}/metricbeat.yml"
   loop_control:
-    label: "{{ render_path }}"
-  vars:
-    template_dir: "{{ role_path }}/templates"
-    render_path: "{{ metricbeat.prefix.config }}/{{ item|beatsclient_strip_prefix(template_dir + '/metricbeat/')|beatsclient_strip_suffix('.j2') }}"
-  with_fileglob:
-    - "{{ role_path }}/templates/metricbeat/*.j2"
+    label: "{{ item.dest }}"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: o-r
   notify: Restart Metricbeat
 
 - name: Configure Metricbeat service
-  template: src="{{ item.src }}" dest="{{ item.dest }}"
-  loop_control:
-    label: "{{ item.dest }}"
-  with_items:
+  when: ansible_os_family == 'FreeBSD'
+  loop:
     - src: rc.conf.d/metricbeat.j2
       dest: /usr/local/etc/rc.conf.d/metricbeat
-  when: ansible_os_family == 'FreeBSD'
+  loop_control:
+    label: "{{ item.dest }}"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
   notify: Restart Metricbeat
 
-- name: Enable Metricbeat service
-  lineinfile: path="{{ item.path }}" regexp="{{ item.regexp }}" line="{{ item.line }}"
-  loop_control:
-    label: "{{ item.path }}"
-  with_items:
-    - path: /etc/rc.conf
-      regexp: "^metricbeat_enable="
-      line: 'metricbeat_enable="YES"'
-  when: ansible_os_family == 'FreeBSD'
-  notify:
-    - Start Metricbeat
+- name: Enable and start Metricbeat
+  service:
+    name: metricbeat
+    state: started
+    enabled: yes
+  register: metricbeat_service_start_result

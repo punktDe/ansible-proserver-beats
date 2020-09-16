@@ -1,46 +1,45 @@
----
+- name: Install Filebeat
+  when: ansible_distribution == 'Ubuntu'
+  apt:
+    name: filebeat
+
 - name: Create directories for Filebeat
+  when: ansible_os_family == 'FreeBSD'
+  loop:
+    - "{{ filebeat.prefix.config }}"
+    - "{{ filebeat.config.path.logs }}"
   file:
     state: directory
     path: "{{ item }}"
-  with_items:
-    - "{{ filebeat.prefix.config }}"
-    - "{{ filebeat.config.path.logs }}"
-  when: ansible_os_family == 'FreeBSD'
   notify: Restart Filebeat
 
-- name: Template Filebeat configuration
-  template:
-    src: "{{ item }}"
-    dest: "{{ render_path }}"
-    mode: o-r
+- name: Template Filebeat config
+  loop:
+    - src: filebeat/filebeat.yml
+      dest: "{{ filebeat.prefix.config }}/filebeat.yml"
   loop_control:
-    label: "{{ render_path }}"
-  vars:
-    template_dir: "{{ role_path }}/templates"
-    render_path: "{{ filebeat.prefix.config }}/{{ item|beatsclient_strip_prefix(template_dir + '/filebeat/')|beatsclient_strip_suffix('.j2') }}"
-  with_fileglob:
-    - "{{ role_path }}/templates/filebeat/*.j2"
+    label: "{{ item.dest }}"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: o-r
   notify: Restart Filebeat
 
 - name: Configure Filebeat service
-  template: src="{{ item.src }}" dest="{{ item.dest }}"
-  loop_control:
-    label: "{{ item.dest }}"
-  with_items:
+  when: ansible_os_family == 'FreeBSD'
+  loop:
     - src: rc.conf.d/filebeat.j2
       dest: /usr/local/etc/rc.conf.d/filebeat
-  when: ansible_os_family == 'FreeBSD'
+  loop_control:
+    label: "{{ item.dest }}"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
   notify: Restart Filebeat
 
-- name: Enable Filebeat service
-  lineinfile: path="{{ item.path }}" regexp="{{ item.regexp }}" line="{{ item.line }}"
-  loop_control:
-    label: "{{ item.path }}"
-  with_items:
-    - path: /etc/rc.conf
-      regexp: "^filebeat_enable="
-      line: 'filebeat_enable="YES"'
-  when: ansible_os_family == 'FreeBSD'
-  notify:
-    - Start Filebeat
+- name: Enable and start Filebeat
+  service:
+    name: filebeat
+    state: started
+    enabled: yes
+  register: filebeat_service_start_result

@@ -1,4 +1,4 @@
----
+- import_tasks: repository.yaml
 - import_tasks: metricbeat.yaml
   when: metricbeat.enabled
 - import_tasks: metricbeat_disabled.yaml

@@ -1,0 +1,18 @@
+- when: ansible_distribution == 'Ubuntu' and (metricbeat.enabled or filebeat.enabled)
+  block:
+    - name: Add Elastic repository key
+      apt_key:
+        url: "{{ beats.repository.apt.key_url }}"
+
+    - name: Add Elastic repository
+      loop:
+        - /etc/apt/sources.list.d/elastic.list
+      copy:
+        content: "{{ beats.repository.apt.repository }}"
+        dest: "{{ item }}"
+      register: beats_add_apt_repository
+
+    - name: Update apt cache
+      when: beats_add_apt_repository.changed
+      apt:
+        update_cache: yes

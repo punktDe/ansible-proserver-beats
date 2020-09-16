@@ -1,29 +1,40 @@
----
+beats:
+  repository:
+    apt:
+      key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      repository: |
+        deb https://artifacts.elastic.co/packages/7.x/apt stable main
 metricbeat:
   enabled: no
   prefix:
-    config: /usr/local/etc/metricbeat
+    config: >-
+      {%- if ansible_system == 'Linux' -%}
+        /etc/metricbeat
+      {%- else -%}
+        /usr/local/etc/metricbeat
+      {%- endif -%}
   config:
     name: "{{ inventory_hostname }}"
     path:
       logs: /var/log/metricbeat
     metricbeat:
-      modules:
-        - module: system
-          metricsets:
-            - network
-          enabled: true
-          period: 60s
-    setup:
-      template:
-        settings:
-          index:
-            number_of_shards: 1
-            number_of_replicas: 0
+      modules: "{{ metricbeat_modules.values()|selectattr('enabled', 'eq', true)|beatsclient_delete_key_from_dicts('enabled')|list }}"
+metricbeat_modules:
+  system:
+    enabled: no
+    module: system
+    metricsets:
+      - network
+    period: 60s
 filebeat:
   enabled: no
   prefix:
-    config: /usr/local/etc/filebeat
+    config: >-
+      {%- if ansible_system == 'Linux' -%}
+        /etc/filebeat
+      {%- else -%}
+        /usr/local/etc/filebeat
+      {%- endif -%}
   config:
     name: "{{ inventory_hostname }}"
     path:
@@ -33,23 +44,33 @@ filebeat:
         enabled: no
       ilm:
         enabled: no
-  elasticsearch_pipelines: {}
-  inputs:
-    varnish-access:
-      enabled: no
-      type: log
-      paths:
-        - /var/log/varnishncsa.log
-      fields:
-        input:
-          name: varnish-access
-      fields_under_root: yes
-    nginx-access:
-      enabled: no
-      type: log
-      paths:
-        - /var/log/nginx/access.log
-      fields:
-        input:
-          name: nginx-access
-      fields_under_root: yes
+    filebeat:
+      inputs: "{{ filebeat_inputs.values()|selectattr('enabled', 'eq', true)|beatsclient_delete_key_from_dicts('enabled')|list }}"
+      modules: "{{ filebeat_modules.values()|selectattr('enabled', 'eq', true)|beatsclient_delete_key_from_dicts('enabled')|list }}"
+filebeat_inputs:
+  varnish-access:
+    enabled: no
+    type: log
+    paths:
+      - /var/log/varnishncsa.log
+    fields:
+      log: varnish-access
+    fields_under_root: yes
+  nginx-access:
+    enabled: no
+    type: log
+    paths:
+      - /var/log/nginx/access.log
+    fields:
+      log: nginx-access
+    fields_under_root: yes
+filebeat_modules:
+  haproxy:
+    enabled: no
+    module: haproxy
+    log:
+      enabled: true
+      var:
+        paths:
+          - /var/log/haproxy.log
+        input: "file"

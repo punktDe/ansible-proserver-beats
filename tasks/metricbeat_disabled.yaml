@@ -1,14 +1,5 @@
----
-- name: Disable Metricbeat service
-  lineinfile:
-    path: "{{ item.path }}"
-    regexp: "{{ item.regexp }}"
-    state: absent
-  loop_control:
-    label: "{{ item.path }}"
-  with_items:
-    - path: /etc/rc.conf
-      regexp: "^metricbeat_enable="
-  when: ansible_os_family == 'FreeBSD'
-  notify:
-    - Stop Metricbeat
+- name: Stop and disable Metricbeat
+  service:
+    name: metricbeat
+    state: stopped
+    enabled: no
