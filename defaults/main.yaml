@@ -17,6 +17,11 @@ metricbeat:
     name: "{{ inventory_hostname }}"
     path:
       logs: /var/log/metricbeat
+    setup:
+      template:
+        enabled: no
+      ilm:
+        enabled: no
     metricbeat:
       modules: "{{ metricbeat_modules.values()|selectattr('enabled', 'eq', true)|beatsclient_delete_key_from_dicts('enabled')|list }}"
 metricbeat_modules:
