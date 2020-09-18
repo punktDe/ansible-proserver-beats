@@ -24,6 +24,9 @@ metricbeat:
         enabled: no
     metricbeat:
       modules: "{{ metricbeat_modules.values()|selectattr('enabled', 'eq', true)|beatsclient_delete_key_from_dicts('enabled')|list }}"
+    fields:
+      log: metricbeat
+    fields_under_root: true
 metricbeat_modules:
   system:
     enabled: no
