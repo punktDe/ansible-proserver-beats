@@ -72,6 +72,14 @@ filebeat_inputs:
     fields:
       log: nginx-access
     fields_under_root: yes
+  flow-system:
+    enabled: no
+    type: log
+    paths:
+      - /var/www/current/Data/Logs/System.log
+    fields:
+      log: flow-system
+    fields_under_root: yes
 filebeat_modules:
   haproxy:
     enabled: no
