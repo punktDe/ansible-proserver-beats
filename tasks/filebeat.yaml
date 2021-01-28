@@ -28,7 +28,7 @@
 - name: Configure Filebeat service
   when: ansible_os_family == 'FreeBSD'
   loop:
-    - src: rc.conf.d/filebeat.j2
+    - src: rc.conf.d/filebeat
       dest: /usr/local/etc/rc.conf.d/filebeat
   loop_control:
     label: "{{ item.dest }}"
