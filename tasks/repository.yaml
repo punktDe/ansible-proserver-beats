@@ -4,6 +4,11 @@
     name: python3-debian
     update_cache: yes
 
+- name: Remove the legacy apt repository
+  ansible.builtin.file:
+    dest: /etc/apt/sources.list.d/elastic.list
+    state: absent
+      
 - name: Add the Beats apt repository
   register: beats_repository_added
   ansible.builtin.deb822_repository:
