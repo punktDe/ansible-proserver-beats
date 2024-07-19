@@ -39,4 +39,3 @@
     name: metricbeat
     state: started
     enabled: yes
-  egister: metricbeat_service_start_result
