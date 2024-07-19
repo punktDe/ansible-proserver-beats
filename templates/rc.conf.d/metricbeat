@@ -1,2 +1,2 @@
-metricbeat_config={{ metricbeat.prefix.config|quote }}
+metricbeat_config={{ metricbeat.prefix.config | quote }}
 metricbeat_home=/var/db/beats/metricbeat

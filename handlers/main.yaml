@@ -1,11 +1,12 @@
+---
 - name: Restart Metricbeat
-  service:
+  ansible.builtin.service:
     name: metricbeat
     state: restarted
-  when: not metricbeat_service_start_result.changed|default(false)
+  when: not metricbeat_service_start_result.changed | default(false)
 
 - name: Restart Filebeat
-  service:
+  ansible.builtin.service:
     name: filebeat
     state: restarted
-  when: not filebeat_service_start_result.changed|default(false)
+  when: not filebeat_service_start_result.changed | default(false)

@@ -1,1 +1,1 @@
-{{ metricbeat.config|to_nice_yaml(indent=2) }}
+{{ metricbeat.config | to_nice_yaml(indent=2) }}
