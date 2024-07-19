@@ -1,9 +1,11 @@
+---
 beats:
+  version: 7
   repository:
     apt:
       key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
       repository: |
-        deb https://artifacts.elastic.co/packages/7.x/apt stable main
+        https://artifacts.elastic.co/packages/{{ vars.beats.version }}.x/apt
 metricbeat:
   enabled: no
   prefix:
@@ -23,7 +25,13 @@ metricbeat:
       ilm:
         enabled: no
     metricbeat:
-      modules: "{{ metricbeat_modules.values()|selectattr('enabled', 'eq', true)|beatsclient_delete_key_from_dicts('enabled')|list }}"
+      modules: >- 
+        {{
+          metricbeat_modules.values() |
+          selectattr('enabled', 'eq', true) |
+          beatsclient_delete_key_from_dicts('enabled') |
+        list
+        }}
     fields:
       log: metricbeat
     fields_under_root: true
@@ -53,8 +61,20 @@ filebeat:
       ilm:
         enabled: no
     filebeat:
-      inputs: "{{ filebeat_inputs.values()|selectattr('enabled', 'eq', true)|beatsclient_delete_key_from_dicts('enabled')|list }}"
-      modules: "{{ filebeat_modules.values()|selectattr('enabled', 'eq', true)|beatsclient_delete_key_from_dicts('enabled')|list }}"
+      inputs: >-
+        {{
+          filebeat_inputs.values() |
+          selectattr('enabled', 'eq', true) |
+          beatsclient_delete_key_from_dicts('enabled') |
+          list
+        }}
+      modules: >-
+        {{
+          filebeat_modules.values() |
+          selectattr('enabled', 'eq', true) |
+          beatsclient_delete_key_from_dicts('enabled') |
+          list 
+        }}
 filebeat_inputs:
   varnish-access:
     enabled: no

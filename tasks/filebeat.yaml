@@ -1,45 +1,44 @@
+---
 - name: Install Filebeat
-  when: ansible_distribution == 'Ubuntu'
-  apt:
+  when: ansible_os_family == 'Debian'
+  ansible.builtin.apt:
     name: filebeat
+    update_cache: yes
 
 - name: Create directories for Filebeat
   when: ansible_os_family == 'FreeBSD'
   loop:
     - "{{ filebeat.prefix.config }}"
     - "{{ filebeat.config.path.logs }}"
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ item }}"
+    owner: "root"
+    mode: "0755"
   notify: Restart Filebeat
 
 - name: Template Filebeat config
-  loop:
-    - src: filebeat/filebeat.yml
-      dest: "{{ filebeat.prefix.config }}/filebeat.yml"
-  loop_control:
-    label: "{{ item.dest }}"
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+  ansible.builtin.template:
+    src: filebeat/filebeat.yml
+    dest: "{{ filebeat.prefix.config }}/filebeat.yml"
     mode: o-r
+    owner: "root"
   notify: Restart Filebeat
 
 - name: Configure Filebeat service
   when: ansible_os_family == 'FreeBSD'
-  loop:
-    - src: rc.conf.d/filebeat
-      dest: /usr/local/etc/rc.conf.d/filebeat
-  loop_control:
-    label: "{{ item.dest }}"
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+  ansible.builtin.template:
+    src: rc.conf.d/filebeat
+    dest: /usr/local/etc/rc.conf.d/filebeat
+    owner: "root"
+    mode: "0755"
   notify: Restart Filebeat
 
 - name: Enable and start Filebeat
-  service:
+  ansible.builtin.service:
     name: filebeat
     state: started
     enabled: yes
   register: filebeat_service_start_result
+  tags:
+    - molecule-idempotence-notest

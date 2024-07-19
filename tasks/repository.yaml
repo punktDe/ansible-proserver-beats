@@ -1,18 +1,27 @@
-- when: ansible_distribution == 'Ubuntu' and (metricbeat.enabled or filebeat.enabled)
-  block:
-    - name: Add Elastic repository key
-      apt_key:
-        url: "{{ beats.repository.apt.key_url }}"
+---
+- name: Install python3-debian package with apt
+  ansible.builtin.apt:
+    name: python3-debian
+    update_cache: yes
 
-    - name: Add Elastic repository
-      loop:
-        - /etc/apt/sources.list.d/elastic.list
-      copy:
-        content: "{{ beats.repository.apt.repository }}"
-        dest: "{{ item }}"
-      register: beats_add_apt_repository
+- name: Remove the legacy apt repository
+  ansible.builtin.file:
+    dest: /etc/apt/sources.list.d/elastic.list
+    state: absent
+      
+- name: Add the Beats apt repository
+  register: beats_repository_added
+  ansible.builtin.deb822_repository:
+    name: elastic
+    uris: "{{ beats.repository.apt.repository }}"
+    signed_by: "{{ beats.repository.apt.key_url }}"
+    types: [deb]
+    components: [main]
+    suites: [stable]
+    state: present
+    enabled: yes
 
-    - name: Update apt cache
-      when: beats_add_apt_repository.changed
-      apt:
-        update_cache: yes
+- name: Update apt cache
+  when: beats_repository_added.changed
+  ansible.builtin.apt:
+    update_cache: yes

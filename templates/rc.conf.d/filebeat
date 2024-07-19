@@ -1,2 +1,2 @@
-filebeat_config={{ filebeat.prefix.config|quote }}
+filebeat_config={{ filebeat.prefix.config | quote }}
 filebeat_home=/var/db/beats/filebeat

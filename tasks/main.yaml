@@ -1,5 +1,12 @@
-- import_tasks: repository.yaml
-- import_tasks: metricbeat.yaml
+---
+- name: Set up beats repository
+  ansible.builtin.include_tasks: repository.yaml
+  when: ansible_os_family == 'Debian' and (metricbeat.enabled or filebeat.enabled)
+
+- name: Set up Metricbeat
+  ansible.builtin.include_tasks: metricbeat.yaml
   when: metricbeat.enabled
-- import_tasks: filebeat.yaml
+
+- name: Set up Filebeat
+  ansible.builtin.include_tasks: filebeat.yaml
   when: filebeat.enabled
