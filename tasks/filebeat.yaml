@@ -40,3 +40,5 @@
     state: started
     enabled: yes
   register: filebeat_service_start_result
+  tags:
+    - molecule-idempotence-notest

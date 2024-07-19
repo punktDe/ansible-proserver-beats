@@ -39,3 +39,5 @@
     name: metricbeat
     state: started
     enabled: yes
+  tags:
+    - molecule-idempotence-notest
