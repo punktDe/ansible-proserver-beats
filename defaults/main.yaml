@@ -1,6 +1,6 @@
 ---
 beats:
-  version: 7
+  version: 8
   repository:
     apt:
       key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
@@ -22,9 +22,14 @@ metricbeat:
     setup:
       template:
         enabled: no
+      dashboard:
+        enabled: no
       ilm:
         enabled: no
     metricbeat:
+      config:
+        modules:
+          path: ${path.config}/modules.d/*.yml
       modules: >- 
         {{
           metricbeat_modules.values() |
