@@ -39,7 +39,6 @@ metricbeat:
         }}
     fields:
       log: metricbeat
-    fields_under_root: true
 metricbeat_modules:
   system:
     enabled: no
@@ -88,7 +87,6 @@ filebeat_inputs:
       - /var/log/varnishncsa.log
     fields:
       log: varnish-access
-    fields_under_root: yes
   nginx-access:
     enabled: no
     type: log
@@ -96,7 +94,6 @@ filebeat_inputs:
       - /var/log/nginx/access.log
     fields:
       log: nginx-access
-    fields_under_root: yes
   flow-system:
     enabled: no
     type: log
@@ -104,7 +101,6 @@ filebeat_inputs:
       - /var/www/current/Data/Logs/System.log
     fields:
       log: flow-system
-    fields_under_root: yes
 filebeat_modules:
   haproxy:
     enabled: no
