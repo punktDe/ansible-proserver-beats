@@ -22,7 +22,7 @@ metricbeat:
     setup:
       template:
         enabled: no
-      dashboard:
+      dashboards:
         enabled: no
       ilm:
         enabled: no
