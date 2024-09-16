@@ -1,6 +1,6 @@
 ---
 beats:
-  version: 7
+  version: 8
   repository:
     apt:
       key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
@@ -22,9 +22,14 @@ metricbeat:
     setup:
       template:
         enabled: no
+      dashboard:
+        enabled: no
       ilm:
         enabled: no
     metricbeat:
+      config:
+        modules:
+          path: ${path.config}/modules.d/*.yml
       modules: >- 
         {{
           metricbeat_modules.values() |
@@ -34,7 +39,6 @@ metricbeat:
         }}
     fields:
       log: metricbeat
-    fields_under_root: true
 metricbeat_modules:
   system:
     enabled: no
@@ -83,7 +87,6 @@ filebeat_inputs:
       - /var/log/varnishncsa.log
     fields:
       log: varnish-access
-    fields_under_root: yes
   nginx-access:
     enabled: no
     type: log
@@ -91,7 +94,6 @@ filebeat_inputs:
       - /var/log/nginx/access.log
     fields:
       log: nginx-access
-    fields_under_root: yes
   flow-system:
     enabled: no
     type: log
@@ -99,7 +101,6 @@ filebeat_inputs:
       - /var/www/current/Data/Logs/System.log
     fields:
       log: flow-system
-    fields_under_root: yes
 filebeat_modules:
   haproxy:
     enabled: no
