@@ -4,8 +4,7 @@ beats:
   repository:
     apt:
       key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-      repository: |
-        https://artifacts.elastic.co/packages/{{ vars.beats.version }}.x/apt
+      repository: https://artifacts.elastic.co/packages/{{ vars.beats.version }}.x/apt
 metricbeat:
   enabled: no
   prefix:
