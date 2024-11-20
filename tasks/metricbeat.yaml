@@ -2,7 +2,7 @@
 - name: Install Metricbeat
   when: ansible_os_family == 'Debian'
   ansible.builtin.apt:
-    name: metricbeat
+    name: "metricbeat>={{ beats.version }}.0"
     update_cache: yes
 
 - name: Create directories for Metricbeat

@@ -2,7 +2,7 @@
 - name: Install Filebeat
   when: ansible_os_family == 'Debian'
   ansible.builtin.apt:
-    name: filebeat
+    name: "filebeat>={{ beats.version }}.0"
     update_cache: yes
 
 - name: Create directories for Filebeat
