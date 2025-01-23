@@ -1,5 +1,6 @@
 ---
 beats:
+  remove_legacy_repository: yes
   version: 8
   repository:
     apt:

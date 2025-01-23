@@ -28,7 +28,7 @@
 - name: Configure Metricbeat service
   when: ansible_os_family == 'FreeBSD'
   ansible.builtin.template:
-    src: rc.conf.d/metricbeat.j2
+    src: rc.conf.d/metricbeat
     dest: /usr/local/etc/rc.conf.d/metricbeat
     owner: root
     mode: "0755"

@@ -5,6 +5,7 @@
     update_cache: yes
 
 - name: Remove the legacy apt repository
+  when: beats.remove_legacy_repository
   ansible.builtin.file:
     dest: /etc/apt/sources.list.d/elastic.list
     state: absent
