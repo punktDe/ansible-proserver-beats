@@ -22,4 +22,4 @@ then stop the service and run the setup:
 metricbeat setup -e
 ```
 
-In order to prevent metricbeat to override templates and boards on every startuo (tages several minutes), disable template / dashboard setup again.
+In order to prevent metricbeat to override templates and boards on every startup (takes several minutes), disable template / dashboard setup again.
