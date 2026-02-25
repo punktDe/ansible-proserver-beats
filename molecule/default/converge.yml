@@ -1,13 +1,9 @@
 ---
 - name: Converge
   hosts: all
-  vars:
-    metricbeat:
-      enabled: yes
-    filebeat:
-      enabled: yes
   environment:
     GITHUB_ACTIONS: "maybe"
+    ANSIBLE_HASH_BEHAVIOUR: merge
   tasks:
     - name: "Include ansible-proserver-beats"
       ansible.builtin.include_role:
