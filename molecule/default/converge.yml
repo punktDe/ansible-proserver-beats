@@ -4,6 +4,31 @@
   environment:
     GITHUB_ACTIONS: "maybe"
     ANSIBLE_HASH_BEHAVIOUR: merge
+  vars:
+    metricbeat:
+      enabled: yes
+      config:
+        output.console:
+          pretty: true
+    metricbeat_modules:
+      system:
+        enabled: yes
+        module: system
+        metricsets:
+          - cpu
+        period: 10s
+    filebeat:
+      enabled: yes
+      config:
+        output.console:
+          pretty: true
+    filebeat_inputs:
+      dummy:
+        enabled: yes
+        type: log
+        paths:
+          - /var/log/syslog
+          - /var/log/messages
   tasks:
     - name: "Include ansible-proserver-beats"
       ansible.builtin.include_role:
