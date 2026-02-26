@@ -1,25 +1,44 @@
-# Manual steps
+<!-- BEGIN_ANSIBLE_DOCS -->
+<!--
+Do not edit README.md directly!
 
-If the ECS (https://www.elastic.co/guide/en/ecs/current/ecs-reference.html) field definition and boards supplied by Elastic are to be used, the following manual steps must be carried out:
+This file is generated automatically by aar-doc and will be overwritten.
 
-Configure an suitable elastic user and enable template / dashboard setup:
+Please edit meta/argument_specs.yml instead.
+-->
+# ansible-proserver-beats
+
+beats role for Proserver
+
+## Supported Operating Systems
+
+- Debian 12, 13
+- Ubuntu 24.04, 22.04
+- FreeBSD [Proserver](https://infrastructure.punkt.de/de/produkte/proserver.html)
+
+## Role Arguments
+
+This entrypoint has no options.
+
+## Dependencies
+None.
+
+## Installation
+Add this role to the requirements.yml of your playbook as follows:
+```yaml
+roles:
+  - name: ansible-proserver-beats
+    src: https://github.com/punktDe/ansible-proserver-beats
+```
+
+Afterwards, install the role by running `ansible-galaxy install -r requirements.yml`
+
+## Example Playbook
 
 ```yaml
-setup:
-  dashboards:
-    enabled: true
-  template:
-    enabled: true
-  kibana:
-    host: "https://kibana-host:443"
-    username: "<user>"
-    password: "<password>"
+- hosts: all
+  roles:
+    - name: beats
 ```
 
-then stop the service and run the setup: 
-
-```bash
-metricbeat setup -e
-```
-
-In order to prevent metricbeat to override templates and boards on every startup (takes several minutes), disable template / dashboard setup again.
+<!-- END_ANSIBLE_DOCS -->

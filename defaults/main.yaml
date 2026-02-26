@@ -10,7 +10,7 @@ metricbeat:
   enabled: no
   prefix:
     config: >-
-      {%- if ansible_system == 'Linux' -%}
+      {%- if ansible_facts['system'] == 'Linux' -%}
         /etc/metricbeat
       {%- else -%}
         /usr/local/etc/metricbeat
@@ -30,7 +30,7 @@ metricbeat:
       config:
         modules:
           path: ${path.config}/modules.d/*.yml
-      modules: >- 
+      modules: >-
         {{
           metricbeat_modules.values() |
           selectattr('enabled', 'eq', true) |
@@ -51,7 +51,7 @@ filebeat:
   enabled: no
   prefix:
     config: >-
-      {%- if ansible_system == 'Linux' -%}
+      {%- if ansible_facts['system'] == 'Linux' -%}
         /etc/filebeat
       {%- else -%}
         /usr/local/etc/filebeat
@@ -78,7 +78,7 @@ filebeat:
           filebeat_modules.values() |
           selectattr('enabled', 'eq', true) |
           beatsclient_delete_key_from_dicts('enabled') |
-          list 
+          list
         }}
 filebeat_inputs:
   varnish-access:

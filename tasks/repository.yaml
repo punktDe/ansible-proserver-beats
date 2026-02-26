@@ -9,7 +9,7 @@
   ansible.builtin.file:
     dest: /etc/apt/sources.list.d/elastic.list
     state: absent
-      
+
 - name: Add the Beats apt repository
   register: beats_repository_added
   ansible.builtin.deb822_repository:
