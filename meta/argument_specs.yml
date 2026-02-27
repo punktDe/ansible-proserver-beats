@@ -1,0 +1,60 @@
+---
+argument_specs:
+  main:
+    short_description: "The main entry point for the beats role."
+    options:
+      beats:
+        type: dict
+        description: "General beats configuration."
+        options:
+          remove_legacy_repository:
+            type: bool
+            default: true
+            description: "Whether to remove the legacy elastic repository."
+          version:
+            type: int
+            default: 8
+            description: "The major version of beats to install."
+          repository:
+            type: dict
+            description: "Repository configuration for installing beats."
+            options:
+              apt:
+                type: dict
+      metricbeat:
+        type: dict
+        description: "Metricbeat configuration."
+        options:
+          enabled:
+            type: bool
+            default: false
+            description: "Whether to enable and install Metricbeat."
+          prefix:
+            type: dict
+            description: "Path prefixes for Metricbeat."
+          config:
+            type: dict
+            description: "Metricbeat specific configuration."
+      metricbeat_modules:
+        type: dict
+        description: "Modules to enable for Metricbeat. Keys are module names."
+      filebeat:
+        type: dict
+        description: "Filebeat configuration."
+        options:
+          enabled:
+            type: bool
+            default: false
+            description: "Whether to enable and install Filebeat."
+          prefix:
+            type: dict
+            description: "Path prefixes for Filebeat."
+          config:
+            type: dict
+            description: "Filebeat specific configuration."
+      filebeat_inputs:
+        type: dict
+        description: "Inputs defined for Filebeat. Keys are input names."
+      filebeat_modules:
+        type: dict
+        description: "Modules to enable for Filebeat. Keys are module names."
