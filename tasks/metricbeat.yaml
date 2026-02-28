@@ -4,6 +4,7 @@
   ansible.builtin.apt:
     name: "metricbeat"
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: Create directories for Metricbeat
   when: ansible_facts['os_family'] == 'FreeBSD'
