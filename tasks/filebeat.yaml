@@ -4,6 +4,7 @@
   ansible.builtin.apt:
     name: "filebeat"
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: Create directories for Filebeat
   when: ansible_facts['os_family'] == 'FreeBSD'
