@@ -1,12 +1,13 @@
 ---
 - name: Install Filebeat
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
   ansible.builtin.apt:
-    name: "filebeat>={{ beats.version }}.0"
+    name: "filebeat"
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: Create directories for Filebeat
-  when: ansible_os_family == 'FreeBSD'
+  when: ansible_facts['os_family'] == 'FreeBSD'
   loop:
     - "{{ filebeat.prefix.config }}"
     - "{{ filebeat.config.path.logs }}"
@@ -26,7 +27,7 @@
   notify: Restart Filebeat
 
 - name: Configure Filebeat service
-  when: ansible_os_family == 'FreeBSD'
+  when: ansible_facts['os_family'] == 'FreeBSD'
   ansible.builtin.template:
     src: rc.conf.d/filebeat
     dest: /usr/local/etc/rc.conf.d/filebeat

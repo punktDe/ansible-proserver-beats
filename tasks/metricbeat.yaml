@@ -1,12 +1,13 @@
 ---
 - name: Install Metricbeat
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
   ansible.builtin.apt:
-    name: "metricbeat>={{ beats.version }}.0"
+    name: "metricbeat"
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: Create directories for Metricbeat
-  when: ansible_os_family == 'FreeBSD'
+  when: ansible_facts['os_family'] == 'FreeBSD'
   loop:
     - "{{ metricbeat.prefix.config }}"
     - "{{ metricbeat.config.path.logs }}"
@@ -26,7 +27,7 @@
   notify: Restart Metricbeat
 
 - name: Configure Metricbeat service
-  when: ansible_os_family == 'FreeBSD'
+  when: ansible_facts['os_family'] == 'FreeBSD'
   ansible.builtin.template:
     src: rc.conf.d/metricbeat
     dest: /usr/local/etc/rc.conf.d/metricbeat

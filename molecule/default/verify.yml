@@ -5,6 +5,33 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Example assertion
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Check if Filebeat service is running
       ansible.builtin.assert:
-        that: true
+        that:
+          - ansible_facts.services['filebeat.service'] is defined
+          - ansible_facts.services['filebeat.service'].state == 'running'
+        success_msg: "Filebeat is running!"
+        fail_msg: "Filebeat is not running!"
+
+    - name: Check if Metricbeat service is running
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['metricbeat.service'] is defined
+          - ansible_facts.services['metricbeat.service'].state == 'running'
+        success_msg: "Metricbeat is running!"
+        fail_msg: "Metricbeat is not running!"
+
+    - name: Test Filebeat config
+      ansible.builtin.command: filebeat test config
+      register: filebeat_config_test
+      changed_when: false
+      failed_when: filebeat_config_test.rc != 0
+
+    - name: Test Metricbeat config
+      ansible.builtin.command: metricbeat test config
+      register: metricbeat_config_test
+      changed_when: false
+      failed_when: metricbeat_config_test.rc != 0
